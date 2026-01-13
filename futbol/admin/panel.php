@@ -1,62 +1,54 @@
 <?php
+/* 
+---------------------------------------------------
+ ARCHIVO: admin/panel.php
+ FUNCIÓN:
+ - Mostrar todas las reservas
+ - Permitir borrarlas
+---------------------------------------------------
+*/
 session_start();
+require '../conexion.php';
+
+// Seguridad: solo admins
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit;
 }
 
-require '../conexion.php';
-
+// Obtener todas las reservas
 $reservas = $pdo->query("
-    SELECT id, campo_id, nombre, telefono, fecha, hora_inicio, hora_fin
-    FROM reservas
-    ORDER BY fecha DESC, hora_inicio DESC
+    SELECT * FROM reservas
+    ORDER BY fecha, hora_inicio
 ")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Panel Admin</title>
-<style>
-body{font-family:sans-serif;background:#0b0c24;color:white;padding:30px;}
-table{width:100%;border-collapse:collapse;}
-th,td{padding:10px;border-bottom:1px solid #333;}
-a{color:#ff4444;text-decoration:none;}
-.top{display:flex;justify-content:space-between;margin-bottom:20px;}
-</style>
-</head>
-<body>
-
-<div class="top">
-<h2>Reservas</h2>
+<h2>PANEL DE ADMINISTRADOR</h2>
 <a href="logout.php">Cerrar sesión</a>
-</div>
 
-<table>
+<table border="1">
 <tr>
-<th>Campo</th>
-<th>Nombre</th>
-<th>Teléfono</th>
-<th>Fecha</th>
-<th>Hora</th>
-<th>Acción</th>
+    <th>Campo</th>
+    <th>Cliente</th>
+    <th>Fecha</th>
+    <th>Horario</th>
+    <th>Eliminar</th>
 </tr>
 
-<?php foreach($reservas as $r): ?>
+<?php foreach ($reservas as $r): ?>
 <tr>
-<td><?= $r['campo_id'] ?></td>
-<td><?= htmlspecialchars($r['nombre']) ?></td>
-<td><?= $r['telefono'] ?></td>
-<td><?= $r['fecha'] ?></td>
-<td><?= $r['hora_inicio'] ?> - <?= $r['hora_fin'] ?></td>
-<td>
-<a href="eliminar.php?id=<?= $r['id'] ?>" onclick="return confirm('¿Eliminar reserva?')">🗑 Eliminar</a>
-</td>
+    <td><?= $r['campo_id'] ?></td>
+    <td><?= $r['nombre'] ?></td>
+    <td><?= $r['fecha'] ?></td>
+    <td><?= $r['hora_inicio'] ?> - <?= $r['hora_fin'] ?></td>
+    <td>
+        <a href="eliminar.php?id=<?= $r['id'] ?>"
+           onclick="return confirm('¿Eliminar reserva?')">
+           ❌
+        </a>
+    </td>
 </tr>
 <?php endforeach; ?>
 </table>
 
-</body>
-</html>
+

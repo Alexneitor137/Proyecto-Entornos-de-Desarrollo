@@ -1,13 +1,28 @@
 <?php
+/* 
+---------------------------------------------------
+ ARCHIVO: admin/auth.php
+ FUNCIÓN:
+ - Verificar usuario y contraseña
+ - Crear sesión
+---------------------------------------------------
+*/
 session_start();
 
-$USER_ADMIN = "admin";
-$PASS_ADMIN = "1234"; // CAMBIAR EN PRODUCCIÓN
+// Credenciales (hardcodeadas por simplicidad)
+$USER = "admin";
+$PASS = "1234";
 
-if ($_POST['user'] === $USER_ADMIN && $_POST['pass'] === $PASS_ADMIN) {
+// Comparar datos enviados
+if ($_POST['user'] === $USER && $_POST['pass'] === $PASS) {
+
+    // Crear sesión de administrador
     $_SESSION['admin'] = true;
+
+    // Redirigir al panel
     header("Location: panel.php");
-    exit;
+} else {
+    echo "Usuario o contraseña incorrectos";
 }
 
-die("❌ Acceso denegado");
+
